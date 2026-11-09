@@ -1,11 +1,10 @@
-# Mobile App Automation | Learning Portfolio
+# Mobile App Automation | Learning & Project Portfolio
 
-> **Learning and implementation project:** exploring mobile UI automation with **Java,
-> Selenium WebDriver APIs, TestNG, and Appium**.
+> I have learned and applied mobile app automation using **Java, Selenium WebDriver
+> APIs, TestNG, and Appium**, and successfully automated workflows in three apps.
 >
-> I have successfully automated apps across three projects: **Conceptify AI**,
-> **Marg (Ikigai-based career guidance)**, and **DhammaPath**. This repository contains
-> the reusable framework and the demonstrated DhammaPath login flow.
+> This portfolio summarizes that experience and the reusable Android automation
+> framework in this repository.
 
 **Stack:** Java 21 · Maven · Appium 2 · Selenium · TestNG · Android · UiAutomator2
 
@@ -16,23 +15,21 @@
 - [How mobile automation works](#how-mobile-automation-works)
 - [Finding and managing locators](#finding-and-managing-locators)
 - [Framework architecture](#framework-architecture)
-- [Run the DhammaPath example](#run-the-dhammapath-example)
+- [Run the Android automation suite](#run-the-android-automation-suite)
 - [Project structure](#project-structure)
 - [Troubleshooting](#troubleshooting)
 
 <details>
 <summary><strong>Apps automated — expand project notes</strong></summary>
 
-| App | Project area | Automation experience |
-|---|---|---|
-| **Conceptify AI** | AI application | Successfully automated app workflows |
-| **Marg** | Ikigai-based career guidance | Successfully automated app workflows |
-| **DhammaPath** | Meditation and learning app | Automated onboarding, login, and post-login home-screen verification |
+| App | Description |
+|---|---|
+| **Conceptify AI** | AI application |
+| **Marg** | Ikigai-based career guidance |
+| **DhammaPath** | Vipassana meditation guide |
 
-The first two entries describe my broader app-automation learning and work. The
-reusable framework and runnable example in this repository are currently focused on
-DhammaPath; app-specific flows and locators should be maintained with the relevant
-app's test project.
+I successfully automated app workflows while learning and applying the same core
+automation concepts across these projects.
 
 </details>
 
@@ -101,9 +98,8 @@ Use the first available option from this general preference order:
 5. **XPath** — useful when other attributes are unavailable; keep it short and
    attribute-based.
 
-For example, the DhammaPath login UI exposed the email and password fields by their
-`hint`, and the Login button by its `content-desc`. The repository expresses those
-observed attributes as:
+For example, if an app exposes email and password fields by their `hint` and a Login
+button by its `content-desc`, the locator repository can express them as:
 
 ```properties
 username=xpath=//android.widget.EditText[@hint='Email']
@@ -124,7 +120,7 @@ needed. Keep locators in
 classes.
 
 <details>
-<summary><strong>How the DhammaPath locator is used</strong></summary>
+<summary><strong>How a locator is used</strong></summary>
 
 The test calls a business workflow; the business workflow calls screen actions; the
 screen resolves keys from the locator repository and interacts through explicit waits:
@@ -162,14 +158,14 @@ The test describes a scenario and assertions. Business code describes reusable
 workflows. Screen objects perform UI actions. The object repository stores locator
 definitions. Core code manages configuration, driver creation, and waits.
 
-## Run the DhammaPath example
+## Run the Android automation suite
 
 ### Prerequisites
 
 - JDK 21 and Maven 3.9+
 - Node.js and Appium 2
 - Android SDK Platform Tools and an emulator or device
-- DhammaPath APK, or an installed DhammaPath application
+- An Android APK, or an installed Android application that you are authorized to test
 
 Install Appium and its Android driver:
 
@@ -185,12 +181,13 @@ cp env.example .env
 ```
 
 Set the APK path (or installed app details) and **your authorized test-account
-credentials** in `.env`. Never commit `.env` or real credentials.
+credentials** in `.env`. Never commit `.env` or real credentials. Use the package name,
+launch activity, APK, and locators for the app you intend to test.
 
 ```dotenv
-APP_PATH=/absolute/path/to/app-release.apk
-APP_PACKAGE=com.rohitparsode.dhammapath
-APP_ACTIVITY=com.rohitparsode.dhammapath.MainActivity
+APP_PATH=/absolute/path/to/application.apk
+APP_PACKAGE=your.app.package
+APP_ACTIVITY=your.app.package.MainActivity
 TEST_USERNAME=your_test_user@example.com
 TEST_PASSWORD=your_test_password
 DEVICE_NAME=emulator-5554
@@ -212,8 +209,9 @@ Run the suite:
 mvn clean test -DsuiteXmlFile=testng.xml
 ```
 
-The demonstrated flow launches DhammaPath, taps **Next** twice, taps **Begin**, enters
-the configured email and password, taps **Login**, and verifies the home screen.
+The sample login test launches the configured application, completes its configured
+login workflow, and verifies the expected post-login screen. Adapt its test data,
+locators, and screen actions to the application under test.
 
 JVM properties override environment variables, which override properties files, which
 override defaults. For example:
