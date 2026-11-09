@@ -1,4 +1,4 @@
-# Mobile App Automation | Learning & Project Portfolio
+# Mobile App Automation | Learning 
 
 > I have learned and applied mobile app automation using **Java, Selenium WebDriver
 > APIs, TestNG, and Appium**, and successfully automated workflows in three apps.
