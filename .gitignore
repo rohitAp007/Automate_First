@@ -50,3 +50,4 @@ test credentials
 *.iml
 reports/*
 !reports/.gitkeep
+test-data/login-data.local.json

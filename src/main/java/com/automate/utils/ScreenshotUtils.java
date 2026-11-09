@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public final class ScreenshotUtils {
 
@@ -42,11 +43,9 @@ public final class ScreenshotUtils {
                                             .ofPattern(
                                                     "yyyyMMdd_HHmmss"));
 
-            String fileName =
-                    testName
-                            + "_"
-                            + timestamp
-                            + ".png";
+            String safeTestName = testName.replaceAll("[^a-zA-Z0-9._-]", "_");
+            String fileName = safeTestName + "_" + timestamp + "_" +
+                    UUID.randomUUID().toString().substring(0, 8) + ".png";
 
             Path destination =
                     directory.resolve(fileName);
@@ -61,8 +60,7 @@ public final class ScreenshotUtils {
             Files.copy(
                     screenshot.toPath(),
                     destination,
-                    StandardCopyOption
-                            .REPLACE_EXISTING);
+                    StandardCopyOption.COPY_ATTRIBUTES);
 
             return destination.toString();
 

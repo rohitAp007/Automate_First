@@ -180,21 +180,29 @@ Copy the safe template and configure the local environment:
 cp env.example .env
 ```
 
-Set the APK path (or installed app details) and **your authorized test-account
-credentials** in `.env`. Never commit `.env` or real credentials. Use the package name,
-launch activity, APK, and locators for the app you intend to test.
+Set the APK path (or installed app details) in `.env`. Put the login test records in a
+local JSON fixture rather than environment variables.
 
 ```dotenv
 APP_PATH=/absolute/path/to/application.apk
 APP_PACKAGE=your.app.package
 APP_ACTIVITY=your.app.package.MainActivity
-TEST_USERNAME=your_test_user@example.com
-TEST_PASSWORD=your_test_password
 DEVICE_NAME=emulator-5554
 ```
 
 For an already installed app, `APP_PATH` may be left blank; set `APP_PACKAGE` and
 `APP_ACTIVITY`.
+
+Create your local test-data file from the safe template and update it with an
+authorized test account:
+
+```bash
+cp test-data/login-data.json test-data/login-data.local.json
+```
+
+`login-data.local.json` is ignored by Git. TestNG reads each JSON record through a
+data provider, while reports use record indexes rather than printing usernames or
+passwords.
 
 Verify the device and start the Appium server in separate terminals:
 
@@ -212,6 +220,12 @@ mvn clean test -DsuiteXmlFile=testng.xml
 The sample login test launches the configured application, completes its configured
 login workflow, and verifies the expected post-login screen. Adapt its test data,
 locators, and screen actions to the application under test.
+
+The shared TestNG hooks create the Appium driver and screen context in an
+`@BeforeMethod(alwaysRun = true)` hook. The matching
+`@AfterMethod(alwaysRun = true)` hook captures a failure screenshot while the driver
+is alive, always quits the driver, and records the result. A suite listener flushes the
+report when the suite finishes. Cleanup runs even when setup or the test fails.
 
 JVM properties override environment variables, which override properties files, which
 override defaults. For example:
@@ -243,6 +257,7 @@ testng.xml                       Test suite entry point
 
 HTML reports are written to `reports/`; failed-test screenshots are written to
 `screenshots/`. Both folders are ignored by Git except for their `.gitkeep` files.
+Local environment settings and login data remain outside version control.
 
 | Issue | What to check |
 |---|---|
@@ -254,10 +269,12 @@ HTML reports are written to `reports/`; failed-test screenshots are written to
 | Locator not found | Inspect the current screen in Appium Inspector and update the relevant repository key |
 | UiAutomator2 failure | Check Appium logs, ADB connectivity, and the installed UiAutomator2 driver |
 
-## Notes
+## Operational practices
 
-- Use only apps, devices, and test accounts you are authorized to automate.
-- Real credentials belong in the ignored `.env` or a secure secret manager—not source
-  files, test-data JSON, screenshots, or commits.
-- The framework currently demonstrates Android. iOS and cross-device execution are
-  future extensions, not capabilities claimed by this example.
+- Keep device and application configuration in `.env`; keep test cases in JSON data
+  files so credentials are not mixed with driver settings.
+- `.env` and `test-data/login-data.local.json` are excluded from Git.
+- Appium and Selenium client debug logging is disabled to keep typed test data out
+  of generated test logs.
+- The supported execution stack is Java, Selenium WebDriver APIs, Appium, TestNG, and
+  Android UiAutomator2.

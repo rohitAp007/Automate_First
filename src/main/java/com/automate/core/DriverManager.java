@@ -34,12 +34,12 @@ public final class DriverManager {
     }
 
     public static void quitDriver() {
-
         AppiumDriver driver = DRIVER.get();
-
-        if (driver != null) {
-
-            driver.quit();
+        try {
+            if (driver != null) {
+                driver.quit();
+            }
+        } finally {
             DRIVER.remove();
         }
     }
